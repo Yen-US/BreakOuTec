@@ -6,11 +6,14 @@ public class Bloque {
     Integer x = 50;
     Integer y = 50;
     private Game game;
+    Integer puntaje = 0;
+    Integer power;
 
     public Bloque(Game game, int px, int py) {
         this.game= game;
         this.x= px;
         this.y= py;
+        this.power = 0;
     }
 
     public Rectangle getBounds() {

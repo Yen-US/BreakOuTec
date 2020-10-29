@@ -2,12 +2,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.*;
+
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.*;
 
+import java.net.*;
+import java.io.*;
+
+
 @SuppressWarnings("serial")
 public class Game extends JPanel {
+    
+    private static ServerSocket server;
 
     Ball ball = new Ball(this);
     Bloque[][] bloquesL= new Bloque[8][14];
@@ -79,25 +87,91 @@ public class Game extends JPanel {
         racket.paint(g2d);
     }
 
+    public void Client(int i, int j){
+        try {
+            Socket sock = new Socket("127.0.0.1", 25558);
+            PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+            out.println("f"+i+"c"+j);
+            out.flush();
+            
+            out.close();
+            sock.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+         
+    }
+
+    public void Server(){
+        try (ServerSocket serverSocket = new ServerSocket(25557)){
+            System.out.println("Server is listening");
+            while(true){
+                Socket socket = serverSocket.accept();
+                System.out.println("New client connected");
+
+                InputStream input = socket.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+                String text;
+                text = reader.readLine();
+
+                char ch1 = text.charAt(0);
+                if(ch1 == '1'){
+                    //Logica de establecer el mismo puntaje para todas las columnas de la fila dada
+                    Character rowch = text.charAt(2);
+                    Integer row = Character.getNumericValue(rowch); //Fila
+                    String puntajStr = text.substring(text.lastIndexOf("p")+1);
+                    Integer puntaje = Integer.parseInt(puntajStr.trim()); //Columna
+
+                    for(Integer i = 0; i<14; i++){
+                        bloquesL[row][i].puntaje = puntaje;
+                    }
+                }
+                if(ch1 == '2'){
+                    System.out.println("Entra al 2");
+                    //Insertar el power up al ladrillo en la fila y columna dada
+                    Character rowch = text.charAt(2);
+                    Integer row = Character.getNumericValue(rowch); //Fila
+
+                    String colch = text.substring(text.indexOf("c")+1);
+                    colch = colch.substring(0, colch.indexOf("p"));
+
+                    Integer col = Integer.parseInt(colch.trim()); //Columna
+
+                    String poderStr = text.substring(text.lastIndexOf("p")+1);
+                    Integer poder = Integer.parseInt(poderStr.trim()); //Poder
+
+                    bloquesL[row][col].power = poder;
+                }
+
+                System.out.println(text);
+                socket.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Server exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void gameOver() {
         JOptionPane.showMessageDialog(this, "Game Over", "Game Over", JOptionPane.ERROR_MESSAGE);
         System.exit(ABORT);
     }
 
     public static void main(String[] args) throws InterruptedException {
-        JFrame frame = new JFrame("BreakOuTEC");
+        JFrame frame = new JFrame("BreakOuTEC"); 
         Game game = new Game();
         frame.add(game);
         frame.setSize(1195, 720);
         frame.setVisible(true);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         Thread t1 = new Thread();
-
         while (true) {
             game.move();
             game.repaint();
             t1.setPriority(Thread.MAX_PRIORITY);
+            
             t1.sleep(4);
         }
     }
