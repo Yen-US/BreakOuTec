@@ -15,6 +15,7 @@ public class Bloque {
         this.y= py;
         this.power = 0;
     }
+    
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, 80, 30);
@@ -22,6 +23,10 @@ public class Bloque {
 
     private boolean collision() {
         return game.ball.getBounds().intersects(getBounds());
+    }
+
+    public void paint2(Graphics2D g){
+        g.fill3DRect(x, y, 80, 30, true);
     }
 
 

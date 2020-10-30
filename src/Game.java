@@ -58,7 +58,8 @@ public class Game extends JPanel {
                     int power = bloquesL[i][j].power;
 
                     switch (power) {
-                        case 1: // Aumentar vida
+                        case 1:
+                            lifes++;
                             break;
                         case 2:
                              // Nueva bola

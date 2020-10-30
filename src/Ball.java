@@ -4,7 +4,7 @@ import java.lang.*;
 public class Ball {
 
     private static final Integer DIAMETER = 20;
-    Integer x = 547;
+    Integer x = 400;
     Integer y = 400;
     Integer vel = 1;
     Integer xa = vel;
