@@ -3,7 +3,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.*;
 
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.*;
@@ -11,15 +10,13 @@ import java.lang.*;
 import java.net.*;
 import java.io.*;
 
-
 @SuppressWarnings("serial")
 public class Game extends JPanel {
-    
-    private static ServerSocket server;
 
     Ball ball = new Ball(this);
-    Bloque[][] bloquesL= new Bloque[8][14];
-    Racket racket= new Racket(this);
+    Bloque[][] bloquesL = new Bloque[8][14];
+    Racket racket = new Racket(this);
+    Integer lifes = 3;
 
     public Game() {
         bloques();
@@ -42,22 +39,47 @@ public class Game extends JPanel {
     }
 
     private void bloques() {
-        Integer x=5;
-        Integer y=20;
-        for(Integer i=0; i<8;i++){
-            for(Integer j=0; j<14;j++) {
-                bloquesL[i][j]= new Bloque(this, x, y);
-                x+=85;
+        Integer x = 5;
+        Integer y = 20;
+        for (Integer i = 0; i < 8; i++) {
+            for (Integer j = 0; j < 14; j++) {
+                bloquesL[i][j] = new Bloque(this, x, y);
+                x += 85;
             }
-            x=5;
-            y+=35;
+            x = 5;
+            y += 35;
         }
     }
 
-    protected void colls(Bloque bloq){
-        for(int i=0; i<8;i++){
-            for(int j=0; j<14;j++) {
-                if(bloquesL[i][j]==bloq){
+    protected void colls(Bloque bloq) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 14; j++) {
+                if (bloquesL[i][j] == bloq) {
+                    int power = bloquesL[i][j].power;
+
+                    switch (power) {
+                        case 1: // Aumentar vida
+                            break;
+                        case 2:
+                             // Nueva bola
+                             break;
+                        case 3:
+                            racket.set2W();
+                            break;
+                        case 4:
+                            racket.sethalfW();
+                            break;
+                        case 5:
+                            //Aumentar velocidad 2fix
+                            ball.vel = 4;
+                            break;
+                        case 6:
+                            //Disminuir velocidad 2fix
+                            ball.vel = 1;
+                            break;
+                            
+                    }
+                    //Client(i,j);
                     bloquesL[i][j]=null;
                 }
             }
@@ -72,6 +94,7 @@ public class Game extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        g.drawString("Vidas: " + lifes, 10, 13);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -91,7 +114,7 @@ public class Game extends JPanel {
         try {
             Socket sock = new Socket("127.0.0.1", 25558);
             PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-            out.println("f"+i+"c"+j);
+            out.println(i+"c"+j);
             out.flush();
             
             out.close();

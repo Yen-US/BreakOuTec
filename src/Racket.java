@@ -5,7 +5,7 @@ import java.lang.*;
 public class Racket {
 
     private static final Integer y = 660;
-    private static final Integer w = 100;
+    private static Integer w = 200;
     private static final Integer h= 10;
     Integer x = 547;
     Integer xa = 0;
@@ -13,6 +13,18 @@ public class Racket {
 
     public Racket(Game game) {
         this.game= game;
+    }
+
+    public void set2W(){
+        if(w == 200 || w == 100){
+            w = w*2;
+        }
+    }
+
+    public void sethalfW(){
+        if(w== 200||w==400){
+            w = w/2;
+        }
     }
 
     public void move() {
