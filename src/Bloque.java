@@ -8,12 +8,15 @@ public class Bloque {
     private Game game;
     Integer puntaje = 0;
     Integer power;
+    Integer tipo;
 
-    public Bloque(Game game, int px, int py) {
+    public Bloque(Game game, Integer px, Integer py, Integer tip) {
         this.game= game;
         this.x= px;
         this.y= py;
         this.power = 0;
+        this.tipo= tip;
+
     }
     
 
@@ -22,7 +25,12 @@ public class Bloque {
     }
 
     private boolean collision() {
-        return game.ball.getBounds().intersects(getBounds());
+        for (Integer i = 0; i < 3; i++) {
+            if (!(game.bolasL[i] == null)) {
+                return game.bolasL[i].getBounds().intersects(getBounds());
+
+            }
+        }return game.bolasL[0].getBounds().intersects(getBounds());
     }
 
     public void paint2(Graphics2D g){
@@ -31,10 +39,31 @@ public class Bloque {
 
 
     public void paint(Graphics2D g) {
+        switch (tipo){
+            case 0:
+                g.setColor(Color.RED);
+                break;
+            case 1:
+                g.setColor(Color.ORANGE);
+                break;
+            case 2:
+                g.setColor(Color.YELLOW);
+                break;
+            case 3:
+                g.setColor(Color.GREEN);
+                break;
+
+        }
         g.fill3DRect(x, y, 80, 30, true);
 
+
+
         if (collision()){
-            game.ball.collision();
+            for (Integer i = 0; i < 3; i++) {
+                if (!(game.bolasL[i] == null)) {
+                    game.bolasL[i].collision();
+                }
+            }
             game.colls(this);
             g.dispose();
         }

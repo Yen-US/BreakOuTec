@@ -6,10 +6,9 @@ public class Ball {
     private static final Integer DIAMETER = 20;
     Integer x = 400;
     Integer y = 400;
-    Integer vel = 1;
-    Integer xa = vel;
-    Integer ya = vel;
     private Game game;
+    Integer xa = 1;
+    Integer ya = 1;
 
     public Ball(Game game) {
         this.game= game;
@@ -29,15 +28,24 @@ public class Ball {
 
     void move() {
         if (x + xa < 0)
-            xa = vel;
+            xa = game.vel;
         if (x + xa > game.getWidth() - DIAMETER)
-            xa = -xa;
+            xa = -game.vel;
         if (y + ya < 0)
-            ya = vel;
+            ya = game.vel;
         if (y + ya > game.getHeight() - DIAMETER)
-            game.gameOver();
+            if (game.lifes>0){
+                game.lifes-=1;
+                x=400;
+                y=400;
+                xa=game.vel;
+                ya=game.vel;
+            }else{
+                game.gameOver();
+            }
+
         if (collisionRac()){
-            ya = -ya;
+            ya = -game.vel;
             y = game.racket.getTopY() - DIAMETER;
         }
 

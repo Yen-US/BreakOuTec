@@ -1,6 +1,4 @@
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import javax.swing.*;
 
 import java.awt.event.KeyEvent;
@@ -13,10 +11,13 @@ import java.io.*;
 @SuppressWarnings("serial")
 public class Game extends JPanel {
 
-    Ball ball = new Ball(this);
     Bloque[][] bloquesL = new Bloque[8][14];
+    Ball[] bolasL = new Ball[4];
     Racket racket = new Racket(this);
     Integer lifes = 3;
+    Integer vel= 1;
+    Integer punt= 0;
+    Boolean ini=true;
 
     public Game() {
         bloques();
@@ -36,14 +37,43 @@ public class Game extends JPanel {
             }
         });
         setFocusable(true);
+
+    }
+
+    private void bolas(){
+        bolasL[0]=new Ball(this);
+        bolasL[1]=null;
+        bolasL[2]=null;
+        bolasL[3]=null;
     }
 
     private void bloques() {
+
+        if(ini){
+            bolas();
+            ini=false;}
+
         Integer x = 5;
         Integer y = 20;
         for (Integer i = 0; i < 8; i++) {
             for (Integer j = 0; j < 14; j++) {
-                bloquesL[i][j] = new Bloque(this, x, y);
+                switch (i){
+                    case 2:
+                    case 3:
+                        bloquesL[i][j] = new Bloque(this, x, y,1);
+                        break;
+                    case 4:
+                    case 5:
+                        bloquesL[i][j] = new Bloque(this, x, y,2);
+                        break;
+                    case 6:
+                    case 7:
+                        bloquesL[i][j] = new Bloque(this, x, y,3);
+                        break;
+                    default:
+                        bloquesL[i][j] = new Bloque(this, x, y,0);
+                        break;
+                }
                 x += 85;
             }
             x = 5;
@@ -62,8 +92,13 @@ public class Game extends JPanel {
                             lifes++;
                             break;
                         case 2:
-                             // Nueva bola
-                             break;
+                            for(Integer a=0; a<3;a++){
+                                if(bolasL[i]==null){
+                                    bolasL[i]=new Ball(this);
+                                    break;
+                                }
+                            }
+                            break;
                         case 3:
                             racket.set2W();
                             break;
@@ -72,11 +107,11 @@ public class Game extends JPanel {
                             break;
                         case 5:
                             //Aumentar velocidad 2fix
-                            ball.vel = 4;
+                            vel = 2;
                             break;
                         case 6:
                             //Disminuir velocidad 2fix
-                            ball.vel = 1;
+                            vel = 1;
                             break;
                             
                     }
@@ -88,7 +123,11 @@ public class Game extends JPanel {
     }
 
     private void move() {
-        ball.move();
+        for(Integer i=0; i<3;i++){
+            if( !(bolasL[i]==null)){
+                bolasL[i].move();
+            }
+        }
         racket.move();
     }
 
@@ -96,15 +135,41 @@ public class Game extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         g.drawString("Vidas: " + lifes, 10, 13);
+        g.drawString("Puntuación: " + punt, 80, 13);
+        g.setColor(Color.BLACK);
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        ball.paint(g2d);
 
-        for(int i=0; i<8;i++){
-            for(int j=0; j<14;j++) {
+
+        for(Integer i=0; i<3;i++){
+            if( !(bolasL[i]==null)){
+                bolasL[i].paint(g2d);
+            }
+        }
+        for(Integer i=0; i<8;i++){
+            for(Integer j=0; j<14;j++) {
                 if( !(bloquesL[i][j]==null)){
                     bloquesL[i][j].paint(g2d);
+                }
+            }
+        }
+        Boolean empty=true;
+        for(Integer i=0; i<8;i++){
+            for(Integer j=0; j<14;j++) {
+                if( !(bloquesL[i][j]==null)){
+                    empty=false;
+                    break;
+                }
+            }
+        }
+        if(empty){
+            bloques();
+            for(Integer i=0; i<3;i++){
+                if( !(bolasL[i]==null)){
+                    bolasL[i].x=400;
+                    bolasL[i].y=400;
                 }
             }
         }
@@ -189,7 +254,9 @@ public class Game extends JPanel {
         frame.setSize(1195, 720);
         frame.setVisible(true);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBackground(Color.BLACK);
+
         Thread t1 = new Thread();
         while (true) {
             game.move();

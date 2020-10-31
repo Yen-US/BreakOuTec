@@ -20,7 +20,24 @@ public class ClienteObs extends JPanel {
         Integer y = 20;
         for (Integer i = 0; i < 8; i++) {
             for (Integer j = 0; j < 14; j++) {
-                bloquesL[i][j] = new Bloque(null, x, y);
+                switch (i){
+                    case 2:
+                    case 3:
+                        bloquesL[i][j] = new Bloque(null, x, y,1);
+                        break;
+                    case 4:
+                    case 5:
+                        bloquesL[i][j] = new Bloque(null, x, y,2);
+                        break;
+                    case 6:
+                    case 7:
+                        bloquesL[i][j] = new Bloque(null, x, y,3);
+                        break;
+                    default:
+                        bloquesL[i][j] = new Bloque(null, x, y,0);
+                        break;
+                }
+
                 x += 85;
             }
             x = 5;
