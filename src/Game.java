@@ -10,23 +10,15 @@ import java.io.*;
 
 @SuppressWarnings("serial")
 public class Game extends JPanel {
-    /**
-     * Variables globales en las que se incluye, las listas de objetos tales como la de bloques y bolas, ademas de la variable de vidas, velocidad,
-     * puntuacion y la creacion del objeto raqueta
-     */
 
     Bloque[][] bloquesL = new Bloque[8][14];
     Ball[] bolasL = new Ball[4];
     Racket racket = new Racket(this);
     Integer lifes = 3;
-    Integer vel = 1;
-    Integer punt = 0;
-    Boolean ini = true;
+    Integer vel= 1;
+    Integer punt= 0;
+    Boolean ini=true;
 
-
-    /**
-     * Constructor de la clase game, en la que se crea el key listener y se asigna a la racketa
-     */
     public Game() {
         bloques();
         addKeyListener(new KeyListener() {
@@ -48,45 +40,38 @@ public class Game extends JPanel {
 
     }
 
-    /**
-     * Metodo bolas() la cual se instancia la primera bola y luego las tres siguientes son nulas, ya que al inicio solo se inicia con una bola
-     */
-    private void bolas() {
-        bolasL[0] = new Ball(this);
-        bolasL[1] = null;
-        bolasL[2] = null;
-        bolasL[3] = null;
+    private void bolas(){
+        bolasL[0]=new Ball(this);
+        bolasL[1]=null;
+        bolasL[2]=null;
+        bolasL[3]=null;
     }
 
-    /**
-     * Metodo bloques() la cual se crean los bloques, funciona para crear las listas de objetos de los bloques para asi luego ser renderizados
-     * ademas en los mismos se le asigna de una vez el color que cada uno va a poseer
-     */
     private void bloques() {
-        if (ini) {
+
+        if(ini){
             bolas();
-            ini = false;
-        }
+            ini=false;}
 
         Integer x = 5;
         Integer y = 20;
         for (Integer i = 0; i < 8; i++) {
             for (Integer j = 0; j < 14; j++) {
-                switch (i) {
+                switch (i){
                     case 2:
                     case 3:
-                        bloquesL[i][j] = new Bloque(this, x, y, 1);
+                        bloquesL[i][j] = new Bloque(this, x, y,1);
                         break;
                     case 4:
                     case 5:
-                        bloquesL[i][j] = new Bloque(this, x, y, 2);
+                        bloquesL[i][j] = new Bloque(this, x, y,2);
                         break;
                     case 6:
                     case 7:
-                        bloquesL[i][j] = new Bloque(this, x, y, 3);
+                        bloquesL[i][j] = new Bloque(this, x, y,3);
                         break;
                     default:
-                        bloquesL[i][j] = new Bloque(this, x, y, 0);
+                        bloquesL[i][j] = new Bloque(this, x, y,0);
                         break;
                 }
                 x += 85;
@@ -96,10 +81,6 @@ public class Game extends JPanel {
         }
     }
 
-    /**
-     * Metodo colls, el cual recibe el bloque el cual ha colisionado con la bola y le los procedimientos necesarios para poder ser elmiminado del grid
-     * además de aplicar los poderes al juagadore que ese bloque poseia
-     */
     protected void colls(Bloque bloq) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 14; j++) {
@@ -111,9 +92,9 @@ public class Game extends JPanel {
                             lifes++;
                             break;
                         case 2:
-                            for (Integer a = 0; a < 3; a++) {
-                                if (bolasL[i] == null) {
-                                    bolasL[i] = new Ball(this);
+                            for(Integer a=0; a<3;a++){
+                                if(bolasL[i]==null){
+                                    bolasL[i]=new Ball(this);
                                     break;
                                 }
                             }
@@ -132,30 +113,24 @@ public class Game extends JPanel {
                             //Disminuir velocidad 2fix
                             vel = 1;
                             break;
-
+                            
                     }
                     //Client(i,j);
-                    bloquesL[i][j] = null;
+                    bloquesL[i][j]=null;
                 }
             }
         }
     }
 
-    /**
-     * Metodo move() el cual permite luego ser llamdo en el thread del juego para poder ser ejecutado cada cierta cantidad de tiempo y de esta manera
-     * permitir el moviomiento de los objetos en el grid
-     */
     private void move() {
-        for (Integer i = 0; i < 3; i++) {
-            if (!(bolasL[i] == null)) {
+        for(Integer i=0; i<3;i++){
+            if( !(bolasL[i]==null)){
                 bolasL[i].move();
             }
         }
         racket.move();
     }
 
-/** Metodo paint el cual permite dibujar los elementos en pantalla, por ejemplo se recorre todas las listas de objetos para asi si no son nulas
- * dibujarlas en pantalla, ademas tambien permite resetear eel grid cuando se acabe*/
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -219,10 +194,7 @@ public class Game extends JPanel {
     public void Server(){
         try (ServerSocket serverSocket = new ServerSocket(25557)){
             System.out.println("Server is listening");
-
             while(true){
-
-                
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
 
@@ -263,19 +235,18 @@ public class Game extends JPanel {
 
                 System.out.println(text);
                 socket.close();
-
             }
         } catch (IOException e) {
+            System.out.println("Server exception: " + e.getMessage());
             e.printStackTrace();
         }
     }
-    /** Metodo GameOver() el cual permite presenrtar en pantalla el mensaje en caso de que el jugador pierda sus vidas */
+
     public void gameOver() {
         JOptionPane.showMessageDialog(this, "Game Over", "Game Over", JOptionPane.ERROR_MESSAGE);
         System.exit(ABORT);
     }
 
-    /** Main donde se crea el Jframe, ademas donde se crea el thread para poder ejecutar el movimiento */
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("BreakOuTEC"); 
         Game game = new Game();
@@ -290,10 +261,9 @@ public class Game extends JPanel {
         while (true) {
             game.move();
             game.repaint();
+            t1.setPriority(Thread.MAX_PRIORITY);
+            
             t1.sleep(4);
-
-
         }
-
     }
 }
