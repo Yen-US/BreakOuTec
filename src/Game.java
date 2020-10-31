@@ -115,7 +115,7 @@ public class Game extends JPanel {
                             break;
                             
                     }
-                    //Client(i,j);
+                    Client(i,j);
                     bloquesL[i][j]=null;
                 }
             }
@@ -256,6 +256,9 @@ public class Game extends JPanel {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBackground(Color.BLACK);
+
+        Server sv = new Server(game.bloquesL);
+        sv.start();
 
         Thread t1 = new Thread();
         while (true) {

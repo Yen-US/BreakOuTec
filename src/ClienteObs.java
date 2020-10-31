@@ -81,7 +81,7 @@ public class ClienteObs extends JPanel {
 
                 String colstr = text.substring(text.lastIndexOf("c")+1);
                 Integer col = Integer.parseInt(colstr.trim()); //Columna
-                
+
                 bloquesL[row][col] = null;
 
 

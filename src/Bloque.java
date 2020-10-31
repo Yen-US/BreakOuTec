@@ -34,6 +34,21 @@ public class Bloque {
     }
 
     public void paint2(Graphics2D g){
+        switch (tipo){
+            case 0:
+                g.setColor(Color.RED);
+                break;
+            case 1:
+                g.setColor(Color.ORANGE);
+                break;
+            case 2:
+                g.setColor(Color.YELLOW);
+                break;
+            case 3:
+                g.setColor(Color.GREEN);
+                break;
+
+        }
         g.fill3DRect(x, y, 80, 30, true);
     }
 
