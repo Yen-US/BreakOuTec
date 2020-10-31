@@ -9,7 +9,7 @@ public class Bloque {
     Integer puntaje = 0;
     Integer power;
     Integer tipo;
-
+    /** Constructor Bloque utilizado para colocar los bloques en el grid y asignarlo a las variables*/
     public Bloque(Game game, Integer px, Integer py, Integer tip) {
         this.game= game;
         this.x= px;
@@ -19,11 +19,11 @@ public class Bloque {
 
     }
     
-
+/** Metodo getbounds utilizado para obtener el hitbox del bloque */
     public Rectangle getBounds() {
         return new Rectangle(x, y, 80, 30);
     }
-
+/** Metodo collision, utilizado para detectar las colisiones */
     private boolean collision() {
         for (Integer i = 0; i < 3; i++) {
             if (!(game.bolasL[i] == null)) {
@@ -37,7 +37,7 @@ public class Bloque {
         g.fill3DRect(x, y, 80, 30, true);
     }
 
-
+/** metodo paint utilizado para cambiar el color de los bloques, ademas se detectan las colisiones */
     public void paint(Graphics2D g) {
         switch (tipo){
             case 0:
